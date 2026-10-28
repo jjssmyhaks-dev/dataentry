@@ -54,12 +54,25 @@ engine/                 FastAPI service: intake, extraction, rules, router, post
   repo/                 every tenant-scoped read and write
 packages/packs/         industry packs (manufacturing v1.0.0)
 bridge_agent/           Windows agent that talks to TallyPrime on localhost
-apps/web/               Next.js console: dashboard, queue, review, bulk, exceptions, activity, settings
+apps/web/               Next.js app: public landing page (/), then the console at /dashboard,
+                        queue, review, bulk, exceptions, activity, settings
 supabase/               control-plane migrations and the per-tenant schema
 scripts/                migrations, tenant seeding, pack evaluation, smoke run
 tests/                  63 tests: rules, router, gates, evaluation, bridge agent
 docs/PRD.md             the product requirements this was built from
 ```
+
+## Design system
+
+The landing page and the console share one design system, ported from the
+Stackflo reference design: warm near-white paper (`oklch(0.982 0.006 95)`),
+warm near-black ink, Archivo, pill buttons, soft 14px radii and hairline
+borders. Every token lives in `apps/web/src/app/globals.css` under `@theme`;
+the console's ink scale is inverted for paper, so screens written against
+`text-ink-100`/`panel`/`badge` re-tone without touching their markup.
+
+`/` is the marketing page (`src/app/(marketing)/page.tsx`). It is public and
+static. The console lives under `src/app/(app)/` behind the WorkOS session.
 
 ## Running it
 
