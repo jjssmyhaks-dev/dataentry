@@ -103,13 +103,25 @@ WORKOS_REDIRECT_URI=http://localhost:3000/callback
 WORKOS_COOKIE_PASSWORD=<32+ random characters>
 ```
 
-Then point the WorkOS redirect URI at `/callback`. Each WorkOS organisation maps to one tenant
-through `public.tenants.workos_organization_id`; the organisation in the signed session decides
-which Postgres schema a request touches, never anything the browser sends. Roles: `owner`,
-`reviewer`, `viewer`.
+Register the redirect URI in the WorkOS Dashboard under **Applications → your application →
+Redirects**; it must match `WORKOS_REDIRECT_URI` exactly, path included. AuthKit rejects any
+other callback with "This is not a valid redirect URI".
 
-Until those keys are present the app runs as the seeded demo organisation and says so in a
-banner; the engine refuses that path when `ENGINE_ENV=production`.
+**Organisation → tenant, created on first sign-in.** `GET /callback` exchanges the code, then
+calls `POST /v1/tenants/provision` on the engine with the organisation id from the *signed*
+session. The engine keys on that id: a new organisation gets its own tenant row and its own
+Postgres schema (created from `supabase/tenant_schema.sql`) in draft mode at stage 0, and every
+later sign-in from the same organisation resolves to the tenant that already exists. Nobody has
+to run a provisioning script for a new customer.
+
+That organisation is the only thing that decides which schema a request touches — it is resolved
+server-side from the sealed session cookie and sent to the engine as a header, never read from
+the browser. Roles come from the WorkOS organisation membership: `admin`/`owner` → owner,
+`member`/`reviewer` → reviewer, anything else → viewer. A user with no organisation cannot open
+a console page, and a signed-in organisation with no tenant cannot read another one's data.
+
+Until the keys are present the app runs as the seeded demo organisation and says so in a banner;
+the engine refuses that path when `ENGINE_ENV=production`.
 
 ### Bridge agent
 

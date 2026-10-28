@@ -21,6 +21,8 @@ export interface Session {
   organizationId: string | null;
   organizationName: string | null;
   role: Role;
+  /** Slug of the tenant provisioned for this organisation, when there was one. */
+  tenantSlug?: string | null;
   /** True only for the local demo session, so the UI can say so plainly. */
   demo: boolean;
 }
@@ -88,6 +90,7 @@ export function demoSession(): Session {
     organizationId: null,
     organizationName: "Precision Pipes (demo organisation)",
     role: "owner",
+    tenantSlug: env.devTenant,
     demo: true,
   };
 }

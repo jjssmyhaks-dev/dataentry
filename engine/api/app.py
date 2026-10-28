@@ -7,19 +7,31 @@ nothing else touches a tenant's schema (section 9).
 from __future__ import annotations
 
 import contextlib
+import re
 import uuid
 from decimal import Decimal
 from typing import Any
 
-from fastapi import APIRouter, Depends, FastAPI, File, Form, HTTPException, Query, UploadFile
+from fastapi import (
+    APIRouter,
+    Depends,
+    FastAPI,
+    File,
+    Form,
+    Header,
+    HTTPException,
+    Query,
+    UploadFile,
+)
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 
 from engine import __version__
 from engine.api.deps import Principal, get_db, request_principal
-from engine.db import Database, J, record_activity
+from engine.db import Database, J, record_activity, resolve_tenant
 from engine.operations import EngineOperations, TenantScopeError
 from engine.packs.loader import sync_pack
+from engine.provisioning import provision_tenant
 from engine.pipeline import Pipeline
 from engine.posting.commands import expire_stale_commands, pending_commands, record_command_result
 from engine.posting.commands import verify_signature
@@ -121,6 +133,16 @@ class MasterSyncRequest(BaseModel):
     companies: list[dict[str, Any]] = Field(default_factory=list)
     cost_centres: list[dict[str, Any]] = Field(default_factory=list)
     godowns: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class TenantProvisionRequest(BaseModel):
+    """A WorkOS organisation asking for (or re-confirming) its tenant."""
+
+    workos_organization_id: str = Field(min_length=4, max_length=64)
+    name: str = Field(min_length=1, max_length=120)
+    slug: str | None = Field(default=None, max_length=48)
+    industry: str = "manufacturing"
+    pack_key: str = "manufacturing"
 
 
 class DocumentIntake(BaseModel):
@@ -878,6 +900,81 @@ def create_app() -> FastAPI:
         return await ops.sync_masters(
             principal.tenant, agent_id=principal.agent_id, payload=body.model_dump()
         )
+
+    # ── tenant provisioning (web app only) ──────────────────────────────────
+
+    def _require_service_token(authorization: str | None) -> None:
+        token = (authorization or "").removeprefix("Bearer ").strip()
+        if not token or token != settings.engine_service_token:
+            raise HTTPException(
+                status_code=401,
+                detail="tenant provisioning needs the engine service token",
+            )
+
+    async def _unique_slug(db: Database, name: str, organization_id: str) -> str:
+        base = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or "tenant"
+        base = base[:38].strip("-")
+        candidates = [base, f"{base}-{organization_id.rsplit('_', 1)[-1].lower()[:6]}"]
+        async with db.control() as cur:
+            for candidate in candidates:
+                await cur.execute("select 1 from public.tenants where slug = %s", (candidate,))
+                if await cur.fetchone() is None:
+                    return candidate
+        return f"{base}-{uuid.uuid4().hex[:6]}"
+
+    def _tenant_payload(tenant: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": str(tenant["id"]),
+            "slug": tenant["slug"],
+            "name": tenant["name"],
+            "schema_name": tenant["schema_name"],
+            "workos_organization_id": tenant["workos_organization_id"],
+            "pack_key": tenant["pack_key"],
+            "posting_mode": tenant["posting_mode"],
+            "autonomy_stage": tenant["autonomy_stage"],
+            "status": tenant["status"],
+        }
+
+    @router.post("/tenants/provision")
+    async def provision_tenant_route(
+        body: TenantProvisionRequest,
+        authorization: str | None = Header(default=None, alias="Authorization"),
+    ) -> dict[str, Any]:
+        """Map a WorkOS organisation to its own tenant and Postgres schema.
+
+        Called by the web app straight after sign-in, so the first person from a
+        new customer lands in a working (draft-mode) tenant instead of a 403. It
+        is idempotent: the organisation is the key, so a second sign-in returns
+        the existing tenant and never creates a second schema.
+        """
+        _require_service_token(authorization)
+        if not body.workos_organization_id.startswith("org_"):
+            raise HTTPException(
+                status_code=400, detail="workos_organization_id must be a WorkOS organisation id"
+            )
+
+        db: Database = app.state.db
+        existing = await resolve_tenant(
+            db, workos_organization_id=body.workos_organization_id
+        )
+        if existing is not None:
+            async with db.control() as cur:
+                await cur.execute("select * from public.tenants where id = %s", (existing.id,))
+                row = await cur.fetchone()
+            return {"created": False, "tenant": _tenant_payload(row)}
+
+        slug = body.slug or await _unique_slug(db, body.name, body.workos_organization_id)
+        row = await provision_tenant(
+            db,
+            slug=slug,
+            name=body.name,
+            industry=body.industry,
+            workos_organization_id=body.workos_organization_id,
+            pack_key=body.pack_key,
+        )
+        registry = getattr(app.state, "registry", None)
+        pack_ready = bool(registry and body.pack_key in registry.available())
+        return {"created": True, "tenant": _tenant_payload(row), "pack_ready": pack_ready}
 
     app.include_router(router)
 

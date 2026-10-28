@@ -50,7 +50,22 @@ export async function exchangeCode(code: string, returnTo: string): Promise<{ se
   });
 
   const user = result.user;
-  const organizationId: string | null = (result as { organizationId?: string }).organizationId ?? null;
+  let organizationId: string | null = (result as { organizationId?: string }).organizationId ?? null;
+
+  // AuthKit only returns an organisation when one was selected or the user
+  // belongs to exactly one. Fall back to their membership list so a single-org
+  // customer does not have to pick anything.
+  if (!organizationId) {
+    try {
+      const memberships = await workos().userManagement.listOrganizationMemberships({
+        userId: user.id,
+        limit: 1,
+      });
+      organizationId = memberships.data?.[0]?.organizationId ?? null;
+    } catch {
+      organizationId = null;
+    }
+  }
 
   let organizationName: string | null = null;
   let role: Role | null = null;
