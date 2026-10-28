@@ -1,0 +1,47 @@
+{
+  "notes": "Prototype fixture data for the GSTN stub. Appendix B requires the official GSTN source through an empanelled GSP in production; these entries only let the pipeline and its tests run without GSP credentials.",
+  "gstins": {
+    "27AAPFU0939F1ZV": {
+      "status": "active",
+      "legal_name": "SHREE STEEL TUBES PVT LTD",
+      "taxpayer_type": "Regular",
+      "trade_name": "Shree Steel Tubes"
+    },
+    "24AABCS1429B1Z0": {
+      "status": "active",
+      "legal_name": "GUJARAT POLYMER INDUSTRIES",
+      "taxpayer_type": "Regular"
+    },
+    "29AABCK7642P1ZU": {
+      "status": "active",
+      "legal_name": "KARNATAKA FASTENERS PVT LTD",
+      "taxpayer_type": "Regular"
+    },
+    "27AABCT1332L1ZE": {
+      "status": "active",
+      "legal_name": "NAGPUR MACHINING WORKS",
+      "taxpayer_type": "Regular"
+    },
+    "27AAACR5055K1Z7": {
+      "status": "cancelled",
+      "legal_name": "Vidarbha Castings Pvt Ltd",
+      "taxpayer_type": "Regular",
+      "detail": "Cancelled with effect from 12/09/2024"
+    },
+    "27AAGCN2211L1ZJ": {
+      "status": "active",
+      "legal_name": "NAGPUR ENGINEERING CONSULTANTS",
+      "taxpayer_type": "Regular"
+    },
+    "27AABCP8899Q1Z6": {
+      "status": "active",
+      "legal_name": "PRECISION PIPES LIMITED",
+      "taxpayer_type": "Regular"
+    },
+    "33AABCP8899Q1ZD": {
+      "status": "active",
+      "legal_name": "PRECISION PIPES LIMITED - CHENNAI PLANT",
+      "taxpayer_type": "Regular"
+    }
+  }
+}

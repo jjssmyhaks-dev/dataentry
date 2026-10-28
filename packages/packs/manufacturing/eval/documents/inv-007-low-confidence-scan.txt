@@ -1,0 +1,26 @@
+TAX INVOICE
+Vidarbha Castings Pvt Ltd
+Plot 14, MIDC Industrial Area, Nagpur 440016
+GSTIN: 27aaacr5055k1z7
+State: Maharashtra (27)
+
+Invoice No: VCP-2026-0417
+Invoice Date: 22/10/2026
+Billed To: PRECISION PIPES LIMITED
+Buyer GSTIN: 27AABCP8899Q1Z6
+Place of Supply: Maharashtra (27)
+PO Reference: -
+
+Description | HSN | Qty | Unit | Rate | Amount | GST%
+CAST IRON FLANGE | 7307 | 600 | NOS | ? | 47400.00 | 18
+
+Taxable Value: 47400.00
+CGST @ 9%: 4266.00
+SGST @ 9%: 4266.00
+IGST: 0.00
+Round Off: 0.00
+Grand Total: 55932.00
+(scan quality poor: rate column partly unreadable, signature over total)
+Amount in words: Rupees as above
+For Vidarbha Castings Pvt Ltd
+Authorised Signatory

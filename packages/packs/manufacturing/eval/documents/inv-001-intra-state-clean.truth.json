@@ -1,0 +1,49 @@
+{
+  "doc_type": "supplier_invoice",
+  "fields": {
+    "vendor_name": "SHREE STEEL TUBES PVT LTD",
+    "vendor_gstin": "27AAPFU0939F1ZV",
+    "invoice_number": "GST/2026-27/0142",
+    "invoice_date": "2026-10-17",
+    "taxable_value": "105340.00",
+    "cgst": "9480.60",
+    "sgst": "9480.60",
+    "igst": "0.00",
+    "round_off": "0.00",
+    "total": "124301.20",
+    "line_items": [
+      {
+        "description": "MS PIPE 50MM X 3MM",
+        "hsn": "7306",
+        "quantity": "1240",
+        "unit": "KG",
+        "rate": "62.50",
+        "amount": "77500.00",
+        "gst_rate": "18"
+      },
+      {
+        "description": "MS PIPE 25MM X 2MM",
+        "hsn": "7306",
+        "quantity": "480",
+        "unit": "KG",
+        "rate": "58.00",
+        "amount": "27840.00",
+        "gst_rate": "18"
+      }
+    ]
+  },
+  "expected_rules": {
+    "gstin_format": "pass",
+    "gstin_active_status": "pass",
+    "tax_type_vs_place_of_supply": "pass",
+    "tax_arithmetic": "pass",
+    "total_arithmetic": "pass"
+  },
+  "must_auto_post": true,
+  "tags": [
+    "clean",
+    "intra_state",
+    "auto_post"
+  ],
+  "notes": ""
+}

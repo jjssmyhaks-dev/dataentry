@@ -1,0 +1,27 @@
+TAX INVOICE
+SHREE STEEL TUBES PVT LTD
+Plot 14, MIDC Industrial Area, Nagpur 440016
+GSTIN: 27AAPFU0939F1ZV
+State: Maharashtra (27)
+
+Invoice No: GST/2026-27/0142
+Invoice Date: 17/10/2026
+Billed To: PRECISION PIPES LIMITED
+Buyer GSTIN: 27AABCP8899Q1Z6
+Place of Supply: Maharashtra (27)
+PO Reference: PO/2026/0912
+
+Description | HSN | Qty | Unit | Rate | Amount | GST%
+MS PIPE 50MM X 3MM | 7306 | 1240 | KG | 62.50 | 77500.00 | 18
+MS PIPE 25MM X 2MM | 7306 | 480 | KG | 58.00 | 27840.00 | 18
+
+Taxable Value: 105340.00
+CGST @ 9%: 9480.60
+SGST @ 9%: 9480.60
+IGST: 0.00
+Round Off: 0.00
+Grand Total: 124301.20
+
+Amount in words: Rupees as above
+For SHREE STEEL TUBES PVT LTD
+Authorised Signatory

@@ -1,0 +1,56 @@
+{
+  "pack_key": "manufacturing",
+  "pack_version": "1.0.0",
+  "system_prompt": "You extract structured data from documents sent by Indian manufacturers and their suppliers. Return only data that is present on the page: never infer a number that is not written, and never round a value you can read exactly. Amounts are Indian rupees with two decimals. Dates are normalised to YYYY-MM-DD. GSTINs are uppercase and trimmed.",
+  "document_hints": {
+    "supplier_invoice": [
+      "Indian tax invoices split tax as CGST+SGST for intra-state supply and IGST for inter-state supply. Read which one is actually printed rather than deriving it.",
+      "Steel pipes, plastics and similar goods are often billed in weight and in pieces at the same time: quantity may read '1,240 KG / 62 PCS'. Take the unit that the rate is quoted per, and put the other figure in the description.",
+      "Rate per unit frequently excludes GST while the amount column includes it, or the reverse. Capture both as printed and let the arithmetic rules decide.",
+      "'Round Off' or 'Rounding' is a separate line and is not part of the taxable value.",
+      "A rate column reading '18%' inside the tax columns belongs to the line's gst_rate, not to a tax amount.",
+      "Invoice numbers are often prefixed by the financial year, for example 'GST/2026-27/0142'. Keep the whole string.",
+      "HSN codes are 4, 6 or 8 digits. Quantity may carry a unit in the same cell. Keep trailing .00 exactly as printed.",
+      "'Taxable Value' can also appear as 'Sub Total', 'Amount Before Tax' or 'Basic Amount'.",
+      "Handwritten or photographed invoices often have a stamp or signature over the total. Prefer the printed total; if the total is unreadable, give the field low confidence rather than guessing.",
+      "On a multi-page invoice, the totals are on the last page; line items may continue across pages. Keep line items in their original order and note the page each came from.",
+      "The vendor's GSTIN is the one at the top under the seller's block. The buyer's GSTIN appears under 'Details of Receiver' or 'Billed to'."
+    ],
+    "purchase_order": [
+      "Agreed rate is often quoted excluding GST, with the taxes shown separately at the end.",
+      "A PO may name the item with an internal code plus a description; keep both in description.",
+      "Payment terms appear as '30 days from invoice date' or '2/10 net 30'."
+    ],
+    "goods_receipt": [
+      "The received quantity is what was actually unloaded, which can be less than the challan quantity. Capture both if both are printed.",
+      "The vehicle number appears near the transport or 'Dispatched through' block, sometimes with a lorry receipt number."
+    ],
+    "e_way_bill": [
+      "E-way bills are often photographed; the 12-digit number appears at the top with 'E-Way Bill No.' and a QR code nearby.",
+      "The document number on the e-way bill is the supplier's invoice number, not the e-way bill number.",
+      "Validity is printed as a date and time, for example '19/04/2026 11:59:00 PM'. Take the date."
+    ],
+    "e_invoice": [
+      "The IRN is a 64-character hexadecimal hash and is frequently split across two lines when printed. Join it without spaces.",
+      "Acknowledgement number is printed as 'Ack No.' with a separate 'Ack Date'.",
+      "The signed QR code usually encodes the IRN, the supplier GSTIN and the invoice value; treat it as supporting evidence, not the primary value."
+    ],
+    "bank_statement": [
+      "One statement contains many lines: emit each transaction as its own line item in reading order.",
+      "Withdrawal and deposit columns are mutually exclusive; a zero or dash in a column means no value, not zero rupees.",
+      "The first line of a statement often carries a brought-forward balance and no movement.",
+      "Narrations are truncated by the bank; keep exactly what is printed, including reference numbers such as UTR or cheque numbers.",
+      "Numeric dates in statements are usually DD/MM/YYYY."
+    ]
+  },
+  "language_notes": [
+    "Hindi, Marathi and Gujarati invoices are common; a value printed in Devanagari digits should be normalised to ASCII digits.",
+    "Terms that mark the total in Hindi include 'कुल' and 'योग'; the tax lines are 'केंद्रीय कर' and 'राज्य कर'.",
+    "Do not translate vendor names or item descriptions; return them as printed."
+  ],
+  "field_disambiguation": {
+    "cgst_sgst_vs_igst": "If IGST has a value, CGST and SGST are normally zero, and the other way round. A document with both populated is unusual and should raise the tax split rule.",
+    "taxable_value_vs_total": "taxable_value is before tax; total is what the buyer pays. On some invoices 'Total' means before tax and 'Grand Total' means after: use the word 'Grand' when present.",
+    "amount_vs_taxable": "A line's amount is usually quantity times rate, before the document level taxes."
+  }
+}

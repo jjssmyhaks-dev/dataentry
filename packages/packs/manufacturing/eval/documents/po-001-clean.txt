@@ -1,0 +1,17 @@
+PURCHASE ORDER
+PRECISION PIPES LIMITED
+GSTIN: 27AABCP8899Q1Z6
+
+PO Number: PO/2026/0912
+PO Date: 17/10/2026
+Vendor: SHREE STEEL TUBES PVT LTD
+Vendor GSTIN: 27AAPFU0939F1ZV
+Delivery Date: 01/11/2026
+Payment Terms: 45 days from invoice date
+Place of Supply: Maharashtra (27)
+
+Description | HSN | Qty | Unit | Rate | Amount
+MS PIPE 50MM X 3MM | 7306 | 1240 | KG | 62.50 | 77500.00
+MS PIPE 25MM X 2MM | 7306 | 480 | KG | 58.00 | 27840.00
+
+Order Value: 105340.00

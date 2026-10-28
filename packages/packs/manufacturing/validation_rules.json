@@ -1,0 +1,246 @@
+{
+  "pack_key": "manufacturing",
+  "pack_version": "1.0.0",
+  "engine_contract": "1",
+  "notes": "Declarative validation rules (Appendix B). The engine reads this file; `check` names the implemented check and `settings` carries the thresholds. Changing a GST rule is a pack version bump, not an engine release.",
+  "severity_model": {
+    "outcomes": ["pass", "warn", "fail", "skipped"],
+    "auto_post_rule": "Any fail blocks auto-post. A warn lowers confidence and may route to review depending on tenant thresholds."
+  },
+  "rules": [
+    {
+      "key": "gstin_format",
+      "version": "1.0.0",
+      "title": "GSTIN format",
+      "check": "gstin_format",
+      "description": "15 characters, valid state code, PAN pattern, and checksum character.",
+      "applies_to": ["supplier_invoice", "purchase_order", "goods_receipt", "e_way_bill", "e_invoice"],
+      "severity": "fail",
+      "fields": ["vendor_gstin", "buyer_gstin", "supplier_gstin", "recipient_gstin"],
+      "breach": { "fail": "GSTIN is not a valid 15-character GSTIN." },
+      "settings": { "allow_urp": true, "allow_composition_marker": true }
+    },
+    {
+      "key": "gstin_active_status",
+      "version": "1.0.0",
+      "title": "GSTIN active status",
+      "check": "gstin_active_status",
+      "description": "Vendor GSTIN is active and not cancelled or suspended, via GSTN APIs.",
+      "applies_to": ["supplier_invoice"],
+      "severity": "fail",
+      "fields": ["vendor_gstin"],
+      "requires_lookup": "gstn",
+      "degrade_to": "warn",
+      "breach": {
+        "fail": "GSTIN is cancelled or suspended at the GSTN.",
+        "warn": "GSTIN status could not be checked right now; the record will be rechecked."
+      },
+      "settings": { "cache_ttl_hours": 24, "treat_unknown_as_warn": true }
+    },
+    {
+      "key": "tax_type_vs_place_of_supply",
+      "version": "1.0.0",
+      "title": "Tax type versus place of supply",
+      "check": "tax_type_vs_place_of_supply",
+      "description": "CGST and SGST used for intra-state, IGST for inter-state, based on vendor state and place of supply.",
+      "applies_to": ["supplier_invoice"],
+      "severity": "fail",
+      "fields": ["vendor_gstin", "place_of_supply", "cgst", "sgst", "igst", "buyer_gstin"],
+      "breach": {
+        "fail": "Tax split does not match the place of supply.",
+        "warn": "Place of supply could not be established; assuming intra-state."
+      },
+      "settings": { "default_place_of_supply_source": "buyer_gstin", "tolerance_rupees": 1.0 }
+    },
+    {
+      "key": "tax_arithmetic",
+      "version": "1.0.0",
+      "title": "Tax arithmetic",
+      "check": "tax_arithmetic",
+      "description": "Taxable value times rate equals tax amount per line, within a rounding tolerance.",
+      "applies_to": ["supplier_invoice"],
+      "severity": "fail",
+      "fields": ["line_items", "taxable_value", "cgst", "sgst", "igst"],
+      "breach": {
+        "fail": "Tax amount does not match the taxable value at the stated rate.",
+        "warn": "Tax amount is off by a small rounding amount."
+      },
+      "settings": {
+        "per_line_tolerance_rupees": 1.0,
+        "document_tolerance_rupees": 1.0,
+        "warn_within_rupees": 5.0
+      }
+    },
+    {
+      "key": "total_arithmetic",
+      "version": "1.0.0",
+      "title": "Total arithmetic",
+      "check": "total_arithmetic",
+      "description": "Line totals plus taxes plus round-off equal the invoice total.",
+      "applies_to": ["supplier_invoice", "purchase_order"],
+      "severity": "fail",
+      "fields": ["line_items", "taxable_value", "cgst", "sgst", "igst", "cess", "round_off", "total"],
+      "breach": { "fail": "Invoice total differs from the sum of its parts." },
+      "settings": { "tolerance_rupees": 1.0, "warn_within_rupees": 3.0 }
+    },
+    {
+      "key": "hsn_rate_check",
+      "version": "1.0.0",
+      "title": "HSN and rate check",
+      "check": "hsn_rate_check",
+      "description": "HSN code is valid and the GST rate matches the expected rate for that HSN.",
+      "applies_to": ["supplier_invoice"],
+      "severity": "warn",
+      "fields": ["line_items"],
+      "breach": { "warn": "HSN or GST rate does not match the expected rate for this code." },
+      "settings": { "skip_when_rate_missing": true, "skip_when_hsn_missing": true }
+    },
+    {
+      "key": "duplicate_invoice",
+      "version": "1.0.0",
+      "title": "Duplicate invoice",
+      "check": "duplicate_invoice",
+      "description": "Same vendor and invoice number, or near-identical content found by similarity search.",
+      "applies_to": ["supplier_invoice", "supplier_credit_note"],
+      "severity": "fail",
+      "fields": ["vendor_gstin", "invoice_number", "total"],
+      "breach": {
+        "fail": "The same vendor and invoice number has already been recorded.",
+        "warn": "A near-identical document was recorded earlier."
+      },
+      "settings": { "similarity_threshold": 0.93, "lookback_days": 400 }
+    },
+    {
+      "key": "three_way_match",
+      "version": "1.0.0",
+      "title": "Three-way match",
+      "check": "three_way_match",
+      "description": "Invoice quantity and rate agree with the purchase order and goods receipt within tolerance.",
+      "applies_to": ["supplier_invoice"],
+      "severity": "warn",
+      "fields": ["line_items", "po_reference", "challan_reference"],
+      "breach": {
+        "warn": "Invoice does not agree with the purchase order or goods receipt.",
+        "fail": "Invoice differs from the purchase order or goods receipt by more than the allowed variance."
+      },
+      "settings": {
+        "quantity_variance_warn_pct": 2.0,
+        "quantity_variance_fail_pct": 10.0,
+        "rate_variance_warn_pct": 1.0,
+        "rate_variance_fail_pct": 5.0
+      }
+    },
+    {
+      "key": "gstr2b_match",
+      "version": "1.0.0",
+      "title": "GSTR-2B match",
+      "check": "gstr2b_match",
+      "description": "Invoice appears in the vendor's filed return with matching value and tax, so input credit risk is visible.",
+      "applies_to": ["supplier_invoice"],
+      "severity": "warn",
+      "fields": ["vendor_gstin", "invoice_number", "total", "taxable_value"],
+      "requires_lookup": "gstn",
+      "degrade_to": "warn",
+      "breach": {
+        "warn": "Invoice is not visible in the vendor's filed return for this period; input credit is at risk."
+      },
+      "settings": { "value_tolerance_rupees": 1.0, "period_offset_months": 0 }
+    },
+    {
+      "key": "e_invoice_irn",
+      "version": "1.0.0",
+      "title": "E-invoice IRN",
+      "check": "e_invoice_irn",
+      "description": "Where e-invoicing applies, the IRN is present and consistent with the invoice details.",
+      "applies_to": ["supplier_invoice", "e_invoice"],
+      "severity": "fail",
+      "fields": ["irn", "vendor_gstin", "invoice_number", "total"],
+      "breach": {
+        "fail": "E-invoicing applies to this vendor but no valid IRN is present.",
+        "warn": "IRN is present but does not clearly match the invoice details."
+      },
+      "settings": {
+        "turnover_threshold_crore": 5,
+        "require_irn_when_over_threshold": true,
+        "irn_length": 64
+      }
+    },
+    {
+      "key": "eway_bill_consistency",
+      "version": "1.0.0",
+      "title": "E-way bill consistency",
+      "check": "eway_bill_consistency",
+      "description": "Where applicable, e-way bill value, GSTINs and document number match the invoice.",
+      "applies_to": ["supplier_invoice", "e_way_bill"],
+      "severity": "warn",
+      "fields": ["eway_bill_number", "total", "vendor_gstin", "invoice_number"],
+      "breach": {
+        "warn": "E-way bill does not match the invoice on value, GSTIN or document number."
+      },
+      "settings": { "value_tolerance_rupees": 1.0, "require_when_value_above": 50000 }
+    },
+    {
+      "key": "tds_applicability",
+      "version": "1.0.0",
+      "title": "TDS applicability",
+      "check": "tds_applicability",
+      "description": "Vendor category and amount suggest TDS, and the section and rate are captured.",
+      "applies_to": ["supplier_invoice"],
+      "severity": "warn",
+      "fields": ["vendor_gstin", "taxable_value", "tds_section", "tds_rate"],
+      "breach": { "warn": "TDS may apply to this payment but the section and rate are not captured." },
+      "settings": {
+        "threshold_194c_single": 30000,
+        "threshold_194c_annual": 100000,
+        "threshold_194j_annual": 30000,
+        "suggested_sections": { "contractor": "194C", "professional": "194J", "rent": "194I" }
+      }
+    },
+    {
+      "key": "date_sanity",
+      "version": "1.0.0",
+      "title": "Date sanity",
+      "check": "date_sanity",
+      "description": "Invoice date is not in the future and falls within an open financial period.",
+      "applies_to": ["supplier_invoice", "purchase_order", "goods_receipt", "e_way_bill", "e_invoice"],
+      "severity": "fail",
+      "fields": ["invoice_date", "po_date", "challan_date", "generation_date", "date"],
+      "breach": {
+        "fail": "Document date is in the future or outside an open financial period."
+      },
+      "settings": { "max_future_days": 2, "max_age_days": 1095, "open_periods": [], "period_lock_day": null }
+    },
+    {
+      "key": "bank_running_balance",
+      "version": "1.0.0",
+      "title": "Bank running balance",
+      "check": "bank_running_balance",
+      "description": "Each statement line's balance agrees with the previous balance plus or minus the movement.",
+      "applies_to": ["bank_statement"],
+      "severity": "warn",
+      "fields": ["debit", "credit", "balance"],
+      "breach": { "warn": "Statement balance does not agree with the previous line." },
+      "settings": { "tolerance_rupees": 0.01 }
+    },
+    {
+      "key": "bank_line_categorisation",
+      "version": "1.0.0",
+      "title": "Bank line categorisation and ledger match",
+      "check": "bank_line_categorisation",
+      "description": "Categorise the line and match it to an open bill or a known ledger.",
+      "applies_to": ["bank_statement"],
+      "severity": "warn",
+      "fields": ["narration", "debit", "credit"],
+      "breach": { "warn": "No confident ledger or open bill match for this line." },
+      "settings": { "min_match_confidence": 0.9, "keywords": {
+        "bank_charges": ["charges", "gst on charges", "sms charge", "amb", "minimum balance"],
+        "interest": ["interest", "int pdl", "int credit"],
+        "rtgs_neft": ["rtgs", "neft", "imps", "upi", "ach"],
+        "salary": ["salary", "sal cr", "wages"],
+        "gst_payment": ["gst", "gstr", "cbdt", "challan"],
+        "tds_payment": ["tds", "tcs", "itns"],
+        "cheque_return": ["return", "bounce", "ecs ret"]
+      } }
+    }
+  ]
+}

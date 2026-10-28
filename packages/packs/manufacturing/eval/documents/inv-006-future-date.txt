@@ -1,0 +1,26 @@
+TAX INVOICE
+NAGPUR ENGINEERING CONSULTANTS
+Plot 14, MIDC Industrial Area, Nagpur 440016
+GSTIN: 27AAGCN2211L1ZJ
+State: Maharashtra (27)
+
+Invoice No: NEC/2026/0099
+Invoice Date: 20/11/2026
+Billed To: PRECISION PIPES LIMITED
+Buyer GSTIN: 27AABCP8899Q1Z6
+Place of Supply: Maharashtra (27)
+PO Reference: -
+
+Description | HSN | Qty | Unit | Rate | Amount | GST%
+DESIGN AND DRAFTING SERVICES | 998313 | 1 | JOB | 85000.00 | 85000.00 | 18
+
+Taxable Value: 85000.00
+CGST @ 9%: 7650.00
+SGST @ 9%: 7650.00
+IGST: 0.00
+Round Off: 0.00
+Grand Total: 100300.00
+
+Amount in words: Rupees as above
+For NAGPUR ENGINEERING CONSULTANTS
+Authorised Signatory

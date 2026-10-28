@@ -1,0 +1,26 @@
+TAX INVOICE
+KARNATAKA FASTENERS PVT LTD
+Plot 14, MIDC Industrial Area, Nagpur 440016
+GSTIN: 29AABCK7642P1ZU
+State: Karnataka (29)
+
+Invoice No: KFP/26/0781
+Invoice Date: 22/10/2026
+Billed To: PRECISION PIPES LIMITED
+Buyer GSTIN: 27AABCP8899Q1Z6
+Place of Supply: Karnataka (29)
+PO Reference: -
+
+Description | HSN | Qty | Unit | Rate | Amount | GST%
+HSFG BOLT M16 X 80 | 7318 | 3000 | NOS | 24.00 | 72000.00 | 18
+
+Taxable Value: 72000.00
+CGST @ 9%: 0.00
+SGST @ 9%: 0.00
+IGST: 12960.00
+Round Off: 0.00
+Grand Total: 84960.00
+
+Amount in words: Rupees as above
+For KARNATAKA FASTENERS PVT LTD
+Authorised Signatory

@@ -1,0 +1,27 @@
+TAX INVOICE
+GUJARAT POLYMER INDUSTRIES
+Plot 14, MIDC Industrial Area, Nagpur 440016
+GSTIN: 24AABCS1429B1Z0
+State: Gujarat (24)
+
+Invoice No: GPI/2026/1187
+Invoice Date: 22/10/2026
+Billed To: PRECISION PIPES LIMITED
+Buyer GSTIN: 27AABCP8899Q1Z6
+Place of Supply: Maharashtra (27)
+PO Reference: -
+
+Description | HSN | Qty | Unit | Rate | Amount | GST%
+HDPE PIPE 110MM PN6 | 3917 | 860 | KG | 118.00 | 101480.00 | 18
+HDPE ELBOW 110MM | 3917 | 240 | PCS | 96.00 | 23040.00 | 18
+
+Taxable Value: 124520.00
+CGST @ 9%: 0.00
+SGST @ 9%: 0.00
+IGST: 22413.60
+Round Off: -0.60
+Grand Total: 146933.00
+
+Amount in words: Rupees as above
+For GUJARAT POLYMER INDUSTRIES
+Authorised Signatory

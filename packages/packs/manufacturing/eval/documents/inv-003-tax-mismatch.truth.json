@@ -1,0 +1,20 @@
+{
+  "doc_type": "supplier_invoice",
+  "fields": {
+    "vendor_gstin": "29AABCK7642P1ZU",
+    "invoice_number": "KFP/26/0781",
+    "taxable_value": "72000.00",
+    "igst": "12960.00",
+    "total": "84960.00"
+  },
+  "expected_rules": {
+    "tax_type_vs_place_of_supply": "fail"
+  },
+  "must_auto_post": false,
+  "tags": [
+    "rule_fail",
+    "tax_type_vs_place_of_supply",
+    "review"
+  ],
+  "notes": "Karnataka to Karnataka is intra-state, so CGST and SGST apply, not IGST."
+}

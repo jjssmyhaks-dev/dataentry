@@ -1,0 +1,20 @@
+{
+  "doc_type": "supplier_invoice",
+  "fields": {
+    "vendor_gstin": "27AABCT1332L1ZE",
+    "invoice_number": "TNM/2026/0455",
+    "taxable_value": "96000.00",
+    "total": "113292.00"
+  },
+  "expected_rules": {
+    "total_arithmetic": "fail",
+    "tax_arithmetic": "pass"
+  },
+  "must_auto_post": false,
+  "tags": [
+    "rule_fail",
+    "total_arithmetic",
+    "review"
+  ],
+  "notes": "Taxable plus tax is 113280.00; the stated total is 12 rupees higher."
+}

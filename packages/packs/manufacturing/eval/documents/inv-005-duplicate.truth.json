@@ -1,0 +1,19 @@
+{
+  "doc_type": "supplier_invoice",
+  "fields": {
+    "vendor_gstin": "27AAPFU0939F1ZV",
+    "invoice_number": "GST/2026-27/0142",
+    "taxable_value": "105340.00",
+    "total": "124301.20"
+  },
+  "expected_rules": {
+    "duplicate_invoice": "fail"
+  },
+  "must_auto_post": false,
+  "tags": [
+    "rule_fail",
+    "duplicate_invoice",
+    "review"
+  ],
+  "notes": "Same vendor, same invoice number and same content as inv-001."
+}

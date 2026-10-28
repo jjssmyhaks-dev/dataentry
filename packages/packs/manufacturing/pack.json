@@ -1,0 +1,23 @@
+{
+  "key": "manufacturing",
+  "name": "Manufacturing and Compliance",
+  "industry": "manufacturing",
+  "version": "1.0.0",
+  "status": "active",
+  "description": "Launch pack. Supplier invoices to TallyPrime for Indian manufacturers, with GSTIN, tax arithmetic and compliance validation. Covers the government and compliance side of manufacturing (e-invoice, e-way bill, GSTR-2B, TDS).",
+  "locale": ["en-IN", "hi-IN", "gu-IN", "mr-IN"],
+  "currency": "INR",
+  "parts": {
+    "document_catalogue": "document_catalogue.json",
+    "extraction_hints": "extraction_hints.json",
+    "validation_rules": "validation_rules.json",
+    "connectors": "connectors.json",
+    "evaluation_set": "evaluation_set.json",
+    "hsn_rates": "hsn_rates.json"
+  },
+  "targets": {
+    "primary": "tallyprime",
+    "voucher_style": "accounting",
+    "gst_input_credit": true
+  }
+}

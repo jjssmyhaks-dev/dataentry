@@ -1,0 +1,16 @@
+{
+  "doc_type": "bank_statement",
+  "fields": {
+    "account_reference": "50100234567890",
+    "line_count": 4
+  },
+  "expected_rules": {
+    "bank_line_categorisation": "pass"
+  },
+  "must_auto_post": false,
+  "tags": [
+    "clean",
+    "bank"
+  ],
+  "notes": "Four movement lines plus a brought-forward line that carries no movement."
+}

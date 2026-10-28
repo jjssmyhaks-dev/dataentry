@@ -1,0 +1,161 @@
+{
+  "pack_key": "manufacturing",
+  "pack_version": "1.0.0",
+  "documents": [
+    {
+      "key": "supplier_invoice",
+      "label": "Supplier invoice",
+      "description": "A vendor's tax invoice for goods or services. The v1 target workflow.",
+      "posts_to": "purchase_voucher",
+      "classify_hints": ["tax invoice", "invoice", "bill", "purchase invoice", "debit note reference"],
+      "constraints": {
+        "mandatory_any_of": [["cgst", "sgst", "igst"]],
+        "totals_field": "total"
+      },
+      "line_item_key": "line_items",
+      "fields": [
+        { "name": "vendor_name", "label": "Vendor name", "type": "string", "mandatory": false, "aliases": ["supplier", "seller", "billed by", "vendor", "name of supplier"] },
+        { "name": "vendor_gstin", "label": "Vendor GSTIN", "type": "gstin", "mandatory": true, "aliases": ["gstin", "gst no", "gst number", "supplier gstin", "gstin/uin"] },
+        { "name": "vendor_state_code", "label": "Vendor state code", "type": "string", "mandatory": false, "derived_from": "vendor_gstin" },
+        { "name": "invoice_number", "label": "Invoice number", "type": "string", "mandatory": true, "aliases": ["invoice no", "bill no", "invoice #", "document number", "inv no"] },
+        { "name": "invoice_date", "label": "Invoice date", "type": "date", "mandatory": true, "aliases": ["dated", "date", "invoice dt", "bill date"] },
+        { "name": "buyer_gstin", "label": "Buyer GSTIN", "type": "gstin", "mandatory": false, "aliases": ["recipient gstin", "buyer gst no"] },
+        { "name": "place_of_supply", "label": "Place of supply", "type": "string", "mandatory": false, "aliases": ["pos", "place of supply state"] },
+        { "name": "line_items", "label": "Line items", "type": "array", "mandatory": true, "aliases": ["items", "goods", "description of goods", "particulars"], "item_fields": [
+          { "name": "description", "label": "Description", "type": "string", "mandatory": true },
+          { "name": "hsn", "label": "HSN/SAC", "type": "string", "mandatory": false },
+          { "name": "quantity", "label": "Quantity", "type": "decimal", "mandatory": false },
+          { "name": "unit", "label": "Unit", "type": "string", "mandatory": false },
+          { "name": "rate", "label": "Rate", "type": "decimal", "mandatory": false },
+          { "name": "amount", "label": "Amount", "type": "decimal", "mandatory": true },
+          { "name": "gst_rate", "label": "GST rate", "type": "decimal", "mandatory": false },
+          { "name": "discount", "label": "Discount", "type": "decimal", "mandatory": false }
+        ] },
+        { "name": "taxable_value", "label": "Taxable value", "type": "decimal", "mandatory": true, "aliases": ["subtotal", "taxable amount", "amount before tax", "total before tax"] },
+        { "name": "cgst", "label": "CGST", "type": "decimal", "mandatory": false, "aliases": ["c gst", "central tax"] },
+        { "name": "sgst", "label": "SGST", "type": "decimal", "mandatory": false, "aliases": ["s gst", "state tax"] },
+        { "name": "igst", "label": "IGST", "type": "decimal", "mandatory": false, "aliases": ["i gst", "integrated tax"] },
+        { "name": "cess", "label": "Cess", "type": "decimal", "mandatory": false },
+        { "name": "round_off", "label": "Round off", "type": "decimal", "mandatory": false, "aliases": ["rounding", "rounded off"] },
+        { "name": "total", "label": "Invoice total", "type": "decimal", "mandatory": true, "aliases": ["grand total", "invoice value", "total amount", "net payable"] },
+        { "name": "po_reference", "label": "PO reference", "type": "string", "mandatory": false, "aliases": ["po no", "purchase order", "order no", "your order no"] },
+        { "name": "challan_reference", "label": "Challan reference", "type": "string", "mandatory": false, "aliases": ["dc no", "delivery challan"] },
+        { "name": "vehicle_number", "label": "Vehicle number", "type": "string", "mandatory": false },
+        { "name": "irn", "label": "IRN", "type": "string", "mandatory": false, "aliases": ["invoice reference number"] },
+        { "name": "eway_bill_number", "label": "E-way bill number", "type": "string", "mandatory": false },
+        { "name": "tds_section", "label": "TDS section", "type": "string", "mandatory": false },
+        { "name": "tds_rate", "label": "TDS rate", "type": "decimal", "mandatory": false },
+        { "name": "narration", "label": "Narration", "type": "string", "mandatory": false }
+      ]
+    },
+    {
+      "key": "purchase_order",
+      "label": "Purchase order",
+      "description": "Used for the three-way match against invoice and goods receipt.",
+      "posts_to": "po_record",
+      "classify_hints": ["purchase order", "order confirmation", "po"],
+      "constraints": { "mandatory_any_of": [], "totals_field": "agreed_rate_total" },
+      "line_item_key": "line_items",
+      "fields": [
+        { "name": "po_number", "label": "PO number", "type": "string", "mandatory": true, "aliases": ["po no", "order no", "purchase order no"] },
+        { "name": "po_date", "label": "PO date", "type": "date", "mandatory": false },
+        { "name": "vendor_name", "label": "Vendor", "type": "string", "mandatory": true },
+        { "name": "vendor_gstin", "label": "Vendor GSTIN", "type": "gstin", "mandatory": false },
+        { "name": "line_items", "label": "Order lines", "type": "array", "mandatory": true, "item_fields": [
+          { "name": "description", "label": "Description", "type": "string", "mandatory": true },
+          { "name": "hsn", "label": "HSN/SAC", "type": "string", "mandatory": false },
+          { "name": "quantity", "label": "Quantity", "type": "decimal", "mandatory": false },
+          { "name": "unit", "label": "Unit", "type": "string", "mandatory": false },
+          { "name": "rate", "label": "Agreed rate", "type": "decimal", "mandatory": true },
+          { "name": "amount", "label": "Amount", "type": "decimal", "mandatory": false }
+        ] },
+        { "name": "agreed_rate_total", "label": "Order value", "type": "decimal", "mandatory": false },
+        { "name": "delivery_date", "label": "Delivery date", "type": "date", "mandatory": false },
+        { "name": "payment_terms", "label": "Payment terms", "type": "string", "mandatory": false },
+        { "name": "place_of_supply", "label": "Place of supply", "type": "string", "mandatory": false }
+      ]
+    },
+    {
+      "key": "goods_receipt",
+      "label": "Goods receipt / delivery challan",
+      "description": "Proof of what physically arrived, for the three-way match.",
+      "posts_to": "receipt_note",
+      "classify_hints": ["delivery challan", "goods receipt", "grn", "receipt note", "dc"],
+      "constraints": { "mandatory_any_of": [], "totals_field": null },
+      "line_item_key": "line_items",
+      "fields": [
+        { "name": "challan_number", "label": "Challan number", "type": "string", "mandatory": true, "aliases": ["dc no", "challan no", "grn no"] },
+        { "name": "challan_date", "label": "Challan date", "type": "date", "mandatory": false },
+        { "name": "vendor_name", "label": "Vendor", "type": "string", "mandatory": false },
+        { "name": "vendor_gstin", "label": "Vendor GSTIN", "type": "gstin", "mandatory": false },
+        { "name": "po_reference", "label": "PO reference", "type": "string", "mandatory": false },
+        { "name": "line_items", "label": "Items received", "type": "array", "mandatory": true, "item_fields": [
+          { "name": "description", "label": "Description", "type": "string", "mandatory": true },
+          { "name": "hsn", "label": "HSN/SAC", "type": "string", "mandatory": false },
+          { "name": "quantity_received", "label": "Quantity received", "type": "decimal", "mandatory": true },
+          { "name": "unit", "label": "Unit", "type": "string", "mandatory": false }
+        ] },
+        { "name": "quantity_received", "label": "Total quantity received", "type": "decimal", "mandatory": true },
+        { "name": "vehicle_number", "label": "Vehicle number", "type": "string", "mandatory": false }
+      ]
+    },
+    {
+      "key": "e_way_bill",
+      "label": "E-way bill",
+      "description": "Compliance record linked to the voucher; no voucher of its own.",
+      "posts_to": "compliance_record",
+      "classify_hints": ["e-way bill", "eway bill", "ewb", "government of india e-way bill"],
+      "constraints": { "mandatory_any_of": [], "totals_field": "value" },
+      "line_item_key": null,
+      "fields": [
+        { "name": "eway_bill_number", "label": "E-way bill number", "type": "string", "mandatory": true, "aliases": ["ewb no", "e-way bill no"] },
+        { "name": "generation_date", "label": "Generation date", "type": "date", "mandatory": false },
+        { "name": "supplier_gstin", "label": "Supplier GSTIN", "type": "gstin", "mandatory": true, "aliases": ["from gstin"] },
+        { "name": "recipient_gstin", "label": "Recipient GSTIN", "type": "gstin", "mandatory": true, "aliases": ["to gstin"] },
+        { "name": "document_number", "label": "Document number", "type": "string", "mandatory": true, "aliases": ["invoice no", "doc no"] },
+        { "name": "document_date", "label": "Document date", "type": "date", "mandatory": false },
+        { "name": "hsn", "label": "HSN", "type": "string", "mandatory": false },
+        { "name": "value", "label": "Document value", "type": "decimal", "mandatory": true, "aliases": ["total value", "taxable value"] },
+        { "name": "vehicle_number", "label": "Vehicle number", "type": "string", "mandatory": false, "aliases": ["vehicle no", "vehicle"] },
+        { "name": "valid_upto", "label": "Valid up to", "type": "date", "mandatory": false, "aliases": ["valid till", "validity"] }
+      ]
+    },
+    {
+      "key": "e_invoice",
+      "label": "E-invoice",
+      "description": "IRN and acknowledgement data, linked to the supplier invoice record.",
+      "posts_to": "compliance_record",
+      "classify_hints": ["irn", "invoice reference number", "ack no", "e-invoice"],
+      "constraints": { "mandatory_any_of": [], "totals_field": "value" },
+      "line_item_key": null,
+      "fields": [
+        { "name": "irn", "label": "IRN", "type": "string", "mandatory": true, "aliases": ["invoice reference number"] },
+        { "name": "acknowledgement_number", "label": "Acknowledgement number", "type": "string", "mandatory": true, "aliases": ["ack no", "acknowledgement no"] },
+        { "name": "acknowledgement_date", "label": "Acknowledgement date", "type": "date", "mandatory": false, "aliases": ["ack date"] },
+        { "name": "qr_code_data", "label": "QR code data", "type": "string", "mandatory": false },
+        { "name": "supplier_gstin", "label": "Supplier GSTIN", "type": "gstin", "mandatory": true },
+        { "name": "buyer_gstin", "label": "Buyer GSTIN", "type": "gstin", "mandatory": true },
+        { "name": "document_number", "label": "Document number", "type": "string", "mandatory": false },
+        { "name": "value", "label": "Value", "type": "decimal", "mandatory": true, "aliases": ["invoice value", "total value"] }
+      ]
+    },
+    {
+      "key": "bank_statement",
+      "label": "Bank statement",
+      "description": "One statement, many lines. Priced separately (section 12b).",
+      "posts_to": "bank_ledger_entries",
+      "classify_hints": ["statement of account", "account statement", "bank statement", "transaction details"],
+      "constraints": { "mandatory_any_of": [["debit", "credit"]], "totals_field": null },
+      "line_item_key": null,
+      "fields": [
+        { "name": "account_reference", "label": "Account reference", "type": "string", "mandatory": false, "aliases": ["account no", "a/c no", "account number"] },
+        { "name": "date", "label": "Date", "type": "date", "mandatory": true, "aliases": ["txn date", "value date", "transaction date"] },
+        { "name": "narration", "label": "Narration", "type": "string", "mandatory": true, "aliases": ["description", "particulars", "remarks"] },
+        { "name": "debit", "label": "Debit", "type": "decimal", "mandatory": false, "aliases": ["withdrawal", "dr"] },
+        { "name": "credit", "label": "Credit", "type": "decimal", "mandatory": false, "aliases": ["deposit", "cr"] },
+        { "name": "balance", "label": "Balance", "type": "decimal", "mandatory": false, "aliases": ["running balance", "closing balance"] },
+        { "name": "reference", "label": "Reference number", "type": "string", "mandatory": false, "aliases": ["cheque no", "ref no", "utr"] }
+      ]
+    }
+  ]
+}

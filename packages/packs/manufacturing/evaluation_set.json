@@ -1,0 +1,26 @@
+{
+  "pack_key": "manufacturing",
+  "pack_version": "1.0.0",
+  "notes": "The evaluation set gates every pack release (section 7 part 5, and the stage 1 gate in section 12a). Each case is a labelled document: the ground truth lives next to the document as <file>.truth.json and carries the expected field values, the expected rule outcomes, and whether the case must auto-post.",
+  "source": "synthetic",
+  "source_caveat": "These cases are generated samples that exercise the pipeline and the accuracy harness. They are NOT the design-partner documents the stage 1 gate requires: replace them with real labelled documents (with the customer's consent) before treating any accuracy number as meaningful.",
+  "documents_dir": "eval/documents",
+  "gate": {
+    "metric": "field_accuracy",
+    "target": 0.97,
+    "also_required": ["no_unexplained_wrong_ledger_cases", "every_discrepancy_reviewed"]
+  },
+  "cases": [
+    { "id": "inv-001-intra-state-clean", "doc_type": "supplier_invoice", "tags": ["clean", "intra_state", "auto_post"] },
+    { "id": "inv-002-inter-state-clean", "doc_type": "supplier_invoice", "tags": ["clean", "inter_state", "auto_post"] },
+    { "id": "inv-003-tax-mismatch", "doc_type": "supplier_invoice", "tags": ["rule_fail", "tax_type_vs_place_of_supply", "review"] },
+    { "id": "inv-004-total-mismatch", "doc_type": "supplier_invoice", "tags": ["rule_fail", "total_arithmetic", "review"] },
+    { "id": "inv-005-duplicate", "doc_type": "supplier_invoice", "tags": ["rule_fail", "duplicate_invoice", "review"] },
+    { "id": "inv-006-future-date", "doc_type": "supplier_invoice", "tags": ["rule_fail", "date_sanity", "review"] },
+    { "id": "inv-007-low-confidence-scan", "doc_type": "supplier_invoice", "tags": ["low_confidence", "review"] },
+    { "id": "po-001-clean", "doc_type": "purchase_order", "tags": ["clean"] },
+    { "id": "grn-001-clean", "doc_type": "goods_receipt", "tags": ["clean"] },
+    { "id": "ewb-001-clean", "doc_type": "e_way_bill", "tags": ["clean"] },
+    { "id": "bank-001-clean", "doc_type": "bank_statement", "tags": ["clean"] }
+  ]
+}

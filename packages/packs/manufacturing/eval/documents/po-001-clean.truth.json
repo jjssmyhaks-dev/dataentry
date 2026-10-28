@@ -1,0 +1,15 @@
+{
+  "doc_type": "purchase_order",
+  "fields": {
+    "po_number": "PO/2026/0912",
+    "vendor_name": "SHREE STEEL TUBES PVT LTD",
+    "vendor_gstin": "27AAPFU0939F1ZV",
+    "agreed_rate_total": "105340.00"
+  },
+  "expected_rules": {},
+  "must_auto_post": false,
+  "tags": [
+    "clean"
+  ],
+  "notes": "Used for the three-way match against inv-001."
+}

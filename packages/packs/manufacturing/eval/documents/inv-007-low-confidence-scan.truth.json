@@ -1,0 +1,19 @@
+{
+  "doc_type": "supplier_invoice",
+  "fields": {
+    "vendor_gstin": "27AAACR5055K1Z7",
+    "invoice_number": "VCP-2026-0417",
+    "taxable_value": "47400.00",
+    "total": "55932.00"
+  },
+  "expected_rules": {
+    "gstin_active_status": "fail"
+  },
+  "must_auto_post": false,
+  "tags": [
+    "low_confidence",
+    "review",
+    "cancelled_vendor"
+  ],
+  "notes": "Vendor GSTIN is cancelled in the fixture, and one rate is unreadable."
+}

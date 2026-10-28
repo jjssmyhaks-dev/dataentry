@@ -1,0 +1,41 @@
+# deps
+node_modules/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.eggs/
+*.egg-info/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# builds
+.next/
+out/
+dist/
+build/
+.turbo/
+
+# python
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# local runtime state (bridge agent)
+*.sqlite3
+*.db
+logs/
+var/
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

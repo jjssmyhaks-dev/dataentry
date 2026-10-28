@@ -1,0 +1,21 @@
+{
+  "doc_type": "supplier_invoice",
+  "fields": {
+    "vendor_gstin": "27AAGCN2211L1ZJ",
+    "invoice_number": "NEC/2026/0099",
+    "invoice_date": "2026-11-20",
+    "taxable_value": "85000.00",
+    "total": "100300.00"
+  },
+  "expected_rules": {
+    "date_sanity": "fail",
+    "tds_applicability": "warn"
+  },
+  "must_auto_post": false,
+  "tags": [
+    "rule_fail",
+    "date_sanity",
+    "review"
+  ],
+  "notes": ""
+}

@@ -1,0 +1,13 @@
+GOVERNMENT OF INDIA
+E-WAY BILL
+
+E-Way Bill No: 391004812266
+Generation Date: 17/10/2026
+Supplier GSTIN: 27AAPFU0939F1ZV
+Recipient GSTIN: 27AABCP8899Q1Z6
+Document Number: GST/2026-27/0142
+Document Date: 17/10/2026
+HSN Code: 7306
+Total Value: 124301.20
+Vehicle Number: MH40 AB 1234
+Valid Upto: 29/10/2026

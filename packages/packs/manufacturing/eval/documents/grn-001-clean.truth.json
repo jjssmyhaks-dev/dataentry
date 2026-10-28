@@ -1,0 +1,15 @@
+{
+  "doc_type": "goods_receipt",
+  "fields": {
+    "challan_number": "DC/2026/5510",
+    "po_reference": "PO/2026/0912",
+    "vehicle_number": "MH40 AB 1234",
+    "quantity_received": "1716"
+  },
+  "expected_rules": {},
+  "must_auto_post": false,
+  "tags": [
+    "clean"
+  ],
+  "notes": "Received 1236 KG against 1240 KG ordered: a 0.32% quantity variance, which the three-way match raises as a warn on the invoice."
+}

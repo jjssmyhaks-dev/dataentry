@@ -1,0 +1,16 @@
+DELIVERY CHALLAN
+SHREE STEEL TUBES PVT LTD
+GSTIN: 27AAPFU0939F1ZV
+
+Challan Number: DC/2026/5510
+Challan Date: 22/10/2026
+PO Reference: PO/2026/0912
+Vehicle Number: MH40 AB 1234
+Place of Supply: Maharashtra (27)
+
+Description | HSN | Qty | Unit
+MS PIPE 50MM X 3MM | 7306 | 1236 | KG
+MS PIPE 25MM X 2MM | 7306 | 480 | KG
+
+Total Quantity Received: 1716
+Received By: Stores Department

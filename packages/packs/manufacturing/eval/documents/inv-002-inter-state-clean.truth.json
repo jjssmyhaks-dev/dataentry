@@ -1,0 +1,26 @@
+{
+  "doc_type": "supplier_invoice",
+  "fields": {
+    "vendor_name": "GUJARAT POLYMER INDUSTRIES",
+    "vendor_gstin": "24AABCS1429B1Z0",
+    "invoice_number": "GPI/2026/1187",
+    "invoice_date": "2026-10-22",
+    "taxable_value": "124520.00",
+    "cgst": "0.00",
+    "sgst": "0.00",
+    "igst": "22413.60",
+    "round_off": "-0.60",
+    "total": "146933.00"
+  },
+  "expected_rules": {
+    "tax_type_vs_place_of_supply": "pass",
+    "total_arithmetic": "pass"
+  },
+  "must_auto_post": true,
+  "tags": [
+    "clean",
+    "inter_state",
+    "auto_post"
+  ],
+  "notes": ""
+}

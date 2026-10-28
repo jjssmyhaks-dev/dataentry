@@ -1,0 +1,26 @@
+TAX INVOICE
+NAGPUR MACHINING WORKS
+Plot 14, MIDC Industrial Area, Nagpur 440016
+GSTIN: 27AABCT1332L1ZE
+State: Maharashtra (27)
+
+Invoice No: TNM/2026/0455
+Invoice Date: 22/10/2026
+Billed To: PRECISION PIPES LIMITED
+Buyer GSTIN: 27AABCP8899Q1Z6
+Place of Supply: Maharashtra (27)
+PO Reference: -
+
+Description | HSN | Qty | Unit | Rate | Amount | GST%
+CNC MACHINED SHAFT | 8481 | 150 | NOS | 640.00 | 96000.00 | 18
+
+Taxable Value: 96000.00
+CGST @ 9%: 8640.00
+SGST @ 9%: 8640.00
+IGST: 0.00
+Round Off: 0.00
+Grand Total: 113292.00
+
+Amount in words: Rupees as above
+For NAGPUR MACHINING WORKS
+Authorised Signatory

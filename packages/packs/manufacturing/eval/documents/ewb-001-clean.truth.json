@@ -1,0 +1,16 @@
+{
+  "doc_type": "e_way_bill",
+  "fields": {
+    "eway_bill_number": "391004812266",
+    "supplier_gstin": "27AAPFU0939F1ZV",
+    "recipient_gstin": "27AABCP8899Q1Z6",
+    "document_number": "GST/2026-27/0142",
+    "value": "124301.20"
+  },
+  "expected_rules": {},
+  "must_auto_post": false,
+  "tags": [
+    "clean"
+  ],
+  "notes": "Consistency is asserted on the invoice, where both sides are available."
+}

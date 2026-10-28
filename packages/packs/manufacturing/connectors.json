@@ -1,0 +1,148 @@
+{
+  "pack_key": "manufacturing",
+  "pack_version": "1.0.0",
+  "targets": {
+    "tallyprime_bridge": {
+      "label": "TallyPrime (local bridge agent)",
+      "role": "primary",
+      "transport": "signed_command_over_outbound_websocket",
+      "description": "Mode A. The agent talks to TallyPrime's local XML interface and posts autonomously; only flagged records go to review.",
+      "requires": ["agent_installed", "xml_interface_enabled"]
+    },
+    "tallyprime_file": {
+      "label": "TallyPrime (file import)",
+      "role": "fallback",
+      "transport": "xml_or_excel_download",
+      "description": "Mode B. The platform generates a Tally-compatible import file for the user to import manually."
+    },
+    "csv": {
+      "label": "CSV / Excel export",
+      "role": "universal",
+      "transport": "download"
+    },
+    "webhook": {
+      "label": "Webhook out",
+      "role": "integration",
+      "transport": "signed_https_post"
+    }
+  },
+  "voucher_map": [
+    {
+      "doc_type": "supplier_invoice",
+      "condition": "has_stock_items",
+      "voucher_type": "Purchase",
+      "entries": [
+        { "side": "debit", "source": "line_items", "target": "stock_item_or_purchase_ledger", "per": "line" },
+        { "side": "debit", "source": "cgst", "target": "input_cgst_ledger" },
+        { "side": "debit", "source": "sgst", "target": "input_sgst_ledger" },
+        { "side": "debit", "source": "igst", "target": "input_igst_ledger" },
+        { "side": "debit", "source": "round_off", "target": "roundoff_ledger" },
+        { "side": "credit", "source": "total", "target": "supplier_party_ledger" }
+      ]
+    },
+    {
+      "doc_type": "supplier_invoice",
+      "condition": "services_or_expenses",
+      "voucher_type": "Purchase",
+      "notes": "Journal when the tenant does not run a purchase voucher type.",
+      "entries": [
+        { "side": "debit", "source": "taxable_value", "target": "expense_ledger" },
+        { "side": "debit", "source": "cgst", "target": "input_cgst_ledger" },
+        { "side": "debit", "source": "sgst", "target": "input_sgst_ledger" },
+        { "side": "debit", "source": "igst", "target": "input_igst_ledger" },
+        { "side": "credit", "source": "total", "target": "supplier_party_ledger" },
+        { "side": "credit", "source": "tds", "target": "tds_payable_ledger", "optional": true }
+      ]
+    },
+    {
+      "doc_type": "supplier_credit_note",
+      "condition": "always",
+      "voucher_type": "Debit Note",
+      "notes": "Reverse of the original purchase entries; linked to the original invoice number.",
+      "entries": [
+        { "side": "credit", "source": "line_items", "target": "stock_item_or_purchase_ledger", "per": "line" },
+        { "side": "credit", "source": "cgst", "target": "input_cgst_ledger" },
+        { "side": "credit", "source": "sgst", "target": "input_sgst_ledger" },
+        { "side": "credit", "source": "igst", "target": "input_igst_ledger" },
+        { "side": "debit", "source": "total", "target": "supplier_party_ledger" }
+      ]
+    },
+    {
+      "doc_type": "purchase_order",
+      "condition": "tenant_uses_order_processing",
+      "voucher_type": "Purchase Order",
+      "entries": [
+        { "side": "order", "source": "line_items", "target": "stock_item_or_purchase_ledger", "per": "line" }
+      ]
+    },
+    {
+      "doc_type": "goods_receipt",
+      "condition": "tenant_uses_order_processing",
+      "voucher_type": "Receipt Note",
+      "entries": [
+        { "side": "receipt", "source": "line_items", "target": "stock_item", "per": "line" }
+      ]
+    },
+    {
+      "doc_type": "bank_statement",
+      "condition": "payment_out",
+      "voucher_type": "Payment",
+      "entries": [
+        { "side": "debit", "source": "debit", "target": "party_or_expense_ledger" },
+        { "side": "credit", "source": "debit", "target": "bank_ledger" }
+      ]
+    },
+    {
+      "doc_type": "bank_statement",
+      "condition": "receipt_in",
+      "voucher_type": "Receipt",
+      "entries": [
+        { "side": "debit", "source": "credit", "target": "bank_ledger" },
+        { "side": "credit", "source": "credit", "target": "party_or_income_ledger" }
+      ]
+    },
+    {
+      "doc_type": "bank_statement",
+      "condition": "category_in(bank_charges,interest)",
+      "voucher_type": "Payment",
+      "notes": "Rule based and low risk, so a good candidate for earlier auto-post.",
+      "entries": [
+        { "side": "debit", "source": "debit", "target": "bank_charges_or_interest_ledger" },
+        { "side": "credit", "source": "debit", "target": "bank_ledger" }
+      ]
+    },
+    {
+      "doc_type": "e_way_bill",
+      "condition": "always",
+      "voucher_type": null,
+      "notes": "No voucher. Stored as a compliance record linked to the voucher; the reference number is written into the voucher narration."
+    },
+    {
+      "doc_type": "e_invoice",
+      "condition": "always",
+      "voucher_type": null,
+      "notes": "No voucher. Stored as a compliance record linked to the voucher."
+    }
+  ],
+  "master_data_handling": {
+    "party_match_order": ["gstin", "normalised_name"],
+    "create_party_only_after_approval": true,
+    "never_create_or_rename_ledger": true,
+    "tax_ledgers_mapped_at_onboarding": ["input_cgst_ledger", "input_sgst_ledger", "input_igst_ledger"],
+    "optional_masters": ["cost_centres", "godowns"]
+  },
+  "narration_template": "ADE/{doc_type_short}/{record_short} {vendor_name} {invoice_number}",
+  "idempotency_key_template": "{tenant_id}:{doc_type}:{voucher_type}:{business_key}",
+  "autonomy_defaults": {
+    "stages": [
+      { "stage": 0, "name": "Foundations", "posts": "nothing" },
+      { "stage": 1, "name": "Shadow mode", "posts": "nothing, records what it would have posted" },
+      { "stage": 2, "name": "Autonomous on low-risk", "posts": "repeat vendors, all rules pass, below a low value cap" },
+      { "stage": 3, "name": "Autonomous on standard", "posts": "all supplier invoices passing validation, then bank lines and PO matching" },
+      { "stage": 4, "name": "Full autonomy with monitoring", "posts": "everything that clears rules and confidence" }
+    ],
+    "stage_2_requires": ["known_vendor", "ledger_mapping_confidence_above_0.95", "value_below_cap", "all_rules_pass"],
+    "safety_limits": ["max_autopost_value", "daily_count_cap", "kill_switch"],
+    "auto_demote_on_error_rate_breach": true
+  }
+}
