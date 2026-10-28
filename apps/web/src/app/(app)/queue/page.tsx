@@ -109,7 +109,7 @@ export default async function QueuePage({
         }
       />
 
-      <div className="flex flex-wrap items-center gap-1.5 border-b hairline pb-2">
+      <div className="flex flex-wrap items-center gap-1.5">
         {STATUS_TABS.map((tab) => {
           const active = status === tab.key;
           const count = tab.key.includes(",")
@@ -119,12 +119,16 @@ export default async function QueuePage({
             <Link
               key={tab.key}
               href={href({ status: tab.key, offset: undefined })}
-              className={`rounded-xl px-2.5 py-1.5 text-[12.5px] ${
-                active ? "bg-ink-700 text-ink-100" : "text-ink-400 hover:bg-secondary hover:text-ink-200"
+              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12.5px] transition-colors ${
+                active
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border bg-card text-ink-400 hover:bg-muted hover:text-foreground"
               }`}
             >
               {tab.label}
-              <span className="mono ml-1.5 text-[11px] text-ink-500">{count}</span>
+              <span className={`mono text-[11px] ${active ? "text-background/70" : "text-ink-500"}`}>
+                {count}
+              </span>
             </Link>
           );
         })}
@@ -138,7 +142,7 @@ export default async function QueuePage({
         minAmount={params.min_amount ?? ""}
       />
 
-      <div className="panel-flat overflow-hidden">
+      <div className="panel overflow-hidden">
         {data.items.length === 0 ? (
           <Empty title="Nothing here" icon={<IconInbox size={24} />}>
             No records match these filters. Try the open tab, or clear the filters.

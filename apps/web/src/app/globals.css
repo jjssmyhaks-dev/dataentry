@@ -230,6 +230,14 @@ html {
     padding-inline: 1.5rem;
   }
 
+  /* The console keeps the landing page's gutters on a slightly wider page. */
+  .container-app {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 85rem;
+    padding-inline: 1.5rem;
+  }
+
   .eyebrow {
     font-size: 0.75rem;
     font-weight: 600;

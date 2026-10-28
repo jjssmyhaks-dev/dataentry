@@ -138,7 +138,7 @@ export default async function SettingsPage({
       </section>
 
       <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
-        <section className="panel-flat overflow-hidden">
+        <section className="panel overflow-hidden">
           <div className="border-b hairline px-4 py-3">
             <SectionTitle>Stage & gate</SectionTitle>
           </div>
@@ -190,7 +190,7 @@ export default async function SettingsPage({
         </section>
 
         <div className="space-y-4">
-          <section className="panel-flat overflow-hidden">
+          <section className="panel overflow-hidden">
             <div className="border-b hairline px-4 py-3">
               <SectionTitle>Posting mode</SectionTitle>
             </div>
@@ -246,7 +246,7 @@ export default async function SettingsPage({
             </div>
           </section>
 
-          <section className="panel-flat overflow-hidden">
+          <section className="panel overflow-hidden">
             <div className="border-b hairline px-4 py-3">
               <SectionTitle>Safety limits</SectionTitle>
             </div>
@@ -311,7 +311,7 @@ export default async function SettingsPage({
         </div>
       </div>
 
-      <section className="panel-flat overflow-hidden">
+      <section className="panel overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b hairline px-4 py-3">
           <SectionTitle>Validation rules</SectionTitle>
           <div className="mono flex items-center gap-2 text-[11px] text-ink-500">
@@ -378,7 +378,7 @@ export default async function SettingsPage({
         </table>
       </section>
 
-      <section className="panel-flat overflow-hidden">
+      <section className="panel overflow-hidden">
         <div className="border-b hairline px-4 py-3">
           <SectionTitle right={<span className="mono text-[11px] text-ink-500">{pack.active.evaluation_cases} labelled cases</span>}>
             Active pack
@@ -409,7 +409,7 @@ export default async function SettingsPage({
         </div>
       </section>
 
-      <section className="panel-flat overflow-hidden">
+      <section className="panel overflow-hidden">
         <div className="border-b hairline px-4 py-3">
           <SectionTitle>Roles</SectionTitle>
         </div>

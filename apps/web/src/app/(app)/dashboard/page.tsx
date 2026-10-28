@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { Badge, ConfidenceBar, Empty, PageHeader, Problem, SectionTitle, Stat } from "@/components/ui";
+import {
+  Badge,
+  ConfidenceBar,
+  Empty,
+  PageHeader,
+  Problem,
+  SectionTitle,
+  Stat,
+  Tile,
+} from "@/components/ui";
 import { IconAlert, IconArrowRight, IconBolt } from "@/components/icons";
 import { engineGet, EngineError, type AutonomyState, type Dashboard } from "@/lib/engine";
 import { currentSession } from "@/lib/session";
@@ -84,13 +93,13 @@ export default async function DashboardPage({
           </>
         }
         actions={
-          <div className="flex items-center gap-1 rounded-xl border hairline p-0.5">
+          <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-1">
             {[7, 30, 90].map((d) => (
               <Link
                 key={d}
-                href={`/?days=${d}`}
-                className={`rounded-[7px] px-2.5 py-1 text-[12px] ${
-                  d === days ? "bg-ink-700 text-ink-100" : "text-ink-400 hover:text-ink-200"
+                href={`/dashboard?days=${d}`}
+                className={`rounded-full px-3 py-1 text-[12px] font-medium transition-colors ${
+                  d === days ? "bg-foreground text-background" : "text-ink-400 hover:text-foreground"
                 }`}
               >
                 {d}d
@@ -99,6 +108,55 @@ export default async function DashboardPage({
           </div>
         }
       />
+
+      <section>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-[11px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
+            Workspace
+          </h2>
+          <Link href="/queue" className="text-[12px] text-muted-foreground hover:text-foreground">
+            Open queue →
+          </Link>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <Tile
+            href="/queue"
+            label="Review queue"
+            meta={`${inReview} waiting`}
+            glyph="Q"
+            tone="dark"
+          />
+          <Tile
+            href="/bulk"
+            label="Bulk approve"
+            meta="Clear a whole vendor"
+            glyph="B"
+            tone="light"
+          />
+          <Tile
+            href="/exceptions"
+            label="Exceptions"
+            meta={`${number(dashboard.documents.exceptions)} unreadable`}
+            glyph="E"
+            tone="light"
+          />
+          <Tile href="/intake" label="Intake" meta="Upload or forward" glyph="I" tone="light" />
+          <Tile
+            href="/activity"
+            label="Activity"
+            meta="Every change, on record"
+            glyph="A"
+            tone="light"
+          />
+          <Tile
+            href="/settings"
+            label="Autonomy"
+            meta={`Stage ${autonomy.stage.stage} · ${autonomy.posting_mode}`}
+            glyph="S"
+            tone="chip"
+          />
+        </div>
+      </section>
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <Stat
@@ -138,7 +196,7 @@ export default async function DashboardPage({
       </section>
 
       <div className="grid items-start gap-4 lg:grid-cols-[1.35fr_1fr]">
-        <section className="panel-flat overflow-hidden">
+        <section className="panel overflow-hidden">
           <div className="flex items-center justify-between border-b hairline px-4 py-3">
             <SectionTitle>Autonomy progress</SectionTitle>
             <Link href="/settings" className="btn btn-sm btn-ghost">
@@ -207,7 +265,7 @@ export default async function DashboardPage({
           </div>
         </section>
 
-        <section className="panel-flat overflow-hidden">
+        <section className="panel overflow-hidden">
           <div className="border-b hairline px-4 py-3">
             <SectionTitle right={<span className="badge badge-muted">{number(dashboard.top_flags.length)} codes</span>}>
               Why records get flagged
@@ -217,8 +275,7 @@ export default async function DashboardPage({
             <Empty title="No flags in this window" icon={<IconBolt size={22} />}>
               Nothing has been sent to review in the last {days} days.
             </Empty>
-          ) : (
-            <ul className="divide-y divide-white/5">
+          ) : (              <ul className="divide-y divide-border">
               {dashboard.top_flags.slice(0, 7).map((flag) => (
                 <li key={`${flag.code}-${flag.message}`} className="flex items-start gap-3 px-4 py-2.5">
                   <span className="mono mt-0.5 w-7 shrink-0 text-right text-[11.5px] text-ink-400">
@@ -236,7 +293,7 @@ export default async function DashboardPage({
       </div>
 
       <div className="grid items-start gap-4 lg:grid-cols-[1.35fr_1fr]">
-        <section className="panel-flat overflow-hidden">
+        <section className="panel overflow-hidden">
           <div className="flex items-center justify-between border-b hairline px-4 py-3">
             <SectionTitle>Waiting now</SectionTitle>
             <Link href="/queue" className="btn btn-sm btn-ghost">
@@ -279,7 +336,7 @@ export default async function DashboardPage({
           )}
         </section>
 
-        <section className="panel-flat overflow-hidden">
+        <section className="panel overflow-hidden">
           <div className="border-b hairline px-4 py-3">
             <SectionTitle>Vendor accuracy</SectionTitle>
           </div>
@@ -339,7 +396,7 @@ export default async function DashboardPage({
         />
       </section>
 
-      <p className="text-[11.5px] text-ink-600">
+      <p className="text-[11.5px] text-ink-500">
         Window ends {relative(new Date().toISOString())}. Times are IST. Data comes from the engine,
         which reads this tenant&apos;s own schema.
       </p>

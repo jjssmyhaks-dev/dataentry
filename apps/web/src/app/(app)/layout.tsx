@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Sidebar, TopBar } from "@/components/shell";
+import { TopNav } from "@/components/shell";
 import { engineGet, type AutonomyState, type Dashboard } from "@/lib/engine";
 import { currentSession } from "@/lib/session";
 
@@ -35,20 +35,32 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar counts={counts} exceptions={exceptions} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar session={session} mode={mode} stage={stage} engineUp={engineUp} />
-        {session.demo ? (
-          <div className="border-b border-amber-500/20 bg-amber-500/[0.06] px-5 py-2 text-[12px] text-amber-200/90">
-            <strong className="font-semibold">Demo organisation.</strong> WorkOS is not configured yet,
-            so this session is the seeded design-partner tenant and every user is treated as its owner.
-            Add <span className="mono">WORKOS_API_KEY</span> and{" "}
-            <span className="mono">WORKOS_CLIENT_ID</span> to sign in with real organisations and roles.
+    <div className="flex min-h-screen flex-col">
+      <TopNav
+        session={session}
+        mode={mode}
+        stage={stage}
+        engineUp={engineUp}
+        counts={counts}
+        exceptions={exceptions}
+      />
+      {session.demo ? (
+        <div className="border-b border-amber-500/25 bg-amber-500/[0.07]">
+          <div className="container-app py-2 text-[12px] text-amber-200/90">
+            <strong className="font-semibold">Demo organisation.</strong> WorkOS is not configured yet, so
+            this session is the seeded design-partner tenant and every user is treated as its owner. Add{" "}
+            <span className="mono">WORKOS_API_KEY</span> and <span className="mono">WORKOS_CLIENT_ID</span>{" "}
+            to sign in with real organisations and roles.
           </div>
-        ) : null}
-        <main className="mx-auto w-full max-w-[1500px] flex-1 px-5 py-6 lg:px-8">{children}</main>
-      </div>
+        </div>
+      ) : null}
+      <main className="container-app flex-1 py-7">{children}</main>
+      <footer className="container-app border-t border-border py-6">
+        <p className="text-[11.5px] text-ink-500">
+          Autopost records data only. It never pays, orders or files. Every post traces back to the document
+          it came from.
+        </p>
+      </footer>
     </div>
   );
 }

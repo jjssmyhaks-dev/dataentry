@@ -70,7 +70,7 @@ export function BulkApprovePanel({
 
   if (items.length === 0) {
     return (
-      <div className="panel-flat">
+      <div className="panel">
         <Empty title="Nothing safe to bulk approve" icon={<IconInbox size={22} />}>
           Bulk approve only lists records that pass every rule and sit below the value cap. Anything
           that failed a rule must be opened individually.
@@ -106,7 +106,7 @@ export function BulkApprovePanel({
         </div>
       </div>
 
-      <div className="panel-flat overflow-hidden">
+      <div className="panel overflow-hidden">
         <table className="table">
           <thead>
             <tr>

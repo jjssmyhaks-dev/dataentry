@@ -61,7 +61,7 @@ export default async function ActivityPage({
           detail={failure.detail}
         />
       ) : (
-        <div className="panel-flat overflow-hidden">
+        <div className="panel overflow-hidden">
           {entries.length === 0 ? (
             <Empty title="Nothing recorded yet" icon={<IconPulse size={22} />}>
               Approvals, corrections, rejections and autonomy changes appear here as they happen.

@@ -298,9 +298,9 @@ export function ReviewWorkspace({
         </ul>
       ) : null}
 
-      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         {/* Source document */}
-        <section className="panel-flat sticky top-[70px] overflow-hidden">
+        <section className="panel sticky top-[70px] overflow-hidden">
           <div className="flex items-center justify-between gap-2 border-b hairline px-3.5 py-2.5">
             <div className="flex min-w-0 items-center gap-2">
               <IconFile size={14} className="shrink-0 text-ink-500" />
@@ -366,7 +366,7 @@ export function ReviewWorkspace({
 
         {/* Extracted fields, rules, voucher */}
         <div className="space-y-4">
-          <section className="panel-flat overflow-hidden">
+          <section className="panel overflow-hidden">
             <div className="flex items-center justify-between border-b hairline px-3.5 py-2.5">
               <div className="label-xs">Extracted fields</div>
               <div className="flex items-center gap-2 text-[11px] text-ink-500">
@@ -461,7 +461,7 @@ export function ReviewWorkspace({
             </div>
           </section>
 
-          <section className="panel-flat overflow-hidden">
+          <section className="panel overflow-hidden">
             <div className="flex items-center justify-between border-b hairline px-3.5 py-2.5">
               <div className="label-xs">Rules</div>
               <div className="flex items-center gap-2">
@@ -510,7 +510,7 @@ export function ReviewWorkspace({
             </ul>
           </section>
 
-          <section className="panel-flat overflow-hidden">
+          <section className="panel overflow-hidden">
             <div className="flex items-center justify-between border-b hairline px-3.5 py-2.5">
               <div className="flex items-center gap-2">
                 <IconTally size={14} className="text-ink-500" />
@@ -610,7 +610,7 @@ export function ReviewWorkspace({
           </section>
 
           {detail.actions.length > 0 ? (
-            <section className="panel-flat overflow-hidden">
+            <section className="panel overflow-hidden">
               <div className="border-b hairline px-3.5 py-2.5">
                 <div className="label-xs">History</div>
               </div>

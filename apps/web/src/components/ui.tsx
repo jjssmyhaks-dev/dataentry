@@ -1,6 +1,8 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { confidence as toConfidence } from "@/lib/format";
 
+/** Section heading, matched to the landing page's eyebrow + headline pair. */
 export function PageHeader({
   eyebrow,
   title,
@@ -13,16 +15,56 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-4 border-b pb-5 hairline">
+    <header className="flex flex-wrap items-end justify-between gap-5 pb-6">
       <div className="min-w-0">
-        {eyebrow ? <div className="label-xs mb-1.5">{eyebrow}</div> : null}
-        <h1 className="text-[22px] font-semibold tracking-tight text-ink-100">{title}</h1>
+        {eyebrow ? <div className="eyebrow">{eyebrow}</div> : null}
+        <h1 className="mt-2.5 text-[27px] leading-tight font-semibold tracking-tight sm:text-[34px]">
+          {title}
+        </h1>
         {description ? (
-          <p className="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-ink-300">{description}</p>
+          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-muted-foreground">
+            {description}
+          </p>
         ) : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
     </header>
+  );
+}
+
+/** A workspace shortcut, styled like the landing page's app tiles. */
+export function Tile({
+  href,
+  label,
+  meta,
+  glyph,
+  tone = "light",
+}: {
+  href: string;
+  label: string;
+  meta: string;
+  glyph: string;
+  tone?: "dark" | "light" | "chip";
+}) {
+  const toneClass =
+    tone === "dark"
+      ? "bg-foreground text-background"
+      : tone === "chip"
+        ? "bg-chip text-chip-foreground"
+        : "bg-secondary text-secondary-foreground";
+  return (
+    <Link
+      href={href}
+      className="group rounded-2xl border border-border bg-card p-4 transition-colors hover:bg-muted"
+    >
+      <span
+        className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-[13px] font-bold ${toneClass}`}
+      >
+        {glyph}
+      </span>
+      <p className="mt-2.5 text-[13.5px] font-medium">{label}</p>
+      <p className="mt-0.5 text-[11.5px] text-muted-foreground">{meta}</p>
+    </Link>
   );
 }
 
@@ -38,17 +80,21 @@ export function Stat({
   tone?: "neutral" | "ok" | "warn" | "bad" | "accent";
 }) {
   const toneClass = {
-    neutral: "text-ink-100",
+    neutral: "text-foreground",
     ok: "text-emerald-300",
     warn: "text-amber-300",
     bad: "text-rose-300",
     accent: "text-teal-300",
   }[tone];
   return (
-    <div className="panel px-4 py-3.5">
-      <div className="label-xs">{label}</div>
-      <div className={`mono mt-1.5 text-[21px] leading-none font-semibold ${toneClass}`}>{value}</div>
-      {hint ? <div className="mt-1.5 text-[11.5px] leading-snug text-ink-400">{hint}</div> : null}
+    <div className="rounded-2xl border border-border bg-card px-5 py-4">
+      <div className="text-[10.5px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+        {label}
+      </div>
+      <div className={`mono mt-2.5 text-[26px] leading-none font-semibold tracking-tight ${toneClass}`}>
+        {value}
+      </div>
+      {hint ? <div className="mt-2 text-[11.5px] leading-snug text-muted-foreground">{hint}</div> : null}
     </div>
   );
 }

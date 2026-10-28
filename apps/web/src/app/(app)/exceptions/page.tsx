@@ -57,7 +57,7 @@ export default async function ExceptionsPage({
           detail={failure.detail}
         />
       ) : (
-        <div className="panel-flat overflow-hidden">
+        <div className="panel overflow-hidden">
           {rows.length === 0 ? (
             <Empty title="No open exceptions" icon={<IconUpload size={22} />}>
               Every document that arrived was readable enough to classify. Anything unreadable will
